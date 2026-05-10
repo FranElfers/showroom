@@ -20,7 +20,7 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
                   height={1080}
                   alt="Photography"
                   quality={100}
-                  className="w-full h-auto md:aspect-[21/9] md:object-cover"
+                  className="w-full h-auto md:aspect-[18/9] md:object-cover"
                   sizes="100vw"
                   priority={i === 0}
                 />

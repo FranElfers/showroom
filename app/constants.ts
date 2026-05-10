@@ -73,8 +73,6 @@ export const photos = {
         focalLength: "37mm"
       }
     },
-  ],
-  norte: [
     {
       url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC02099.webp",
       orientation: "horizontal" as Orientation,
@@ -84,7 +82,29 @@ export const photos = {
         shutterSpeed: "1/1600s",
         focalLength: "32mm"
       }
-    }
+    },
+  ],
+  bsas: [
+    {
+      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC02406-Pano.webp",
+      orientation: "horizontal" as Orientation,
+      camera: {
+        iso: 400,
+        aperture: "f/5.6",
+        shutterSpeed: "1/100s",
+        focalLength: "50mm"
+      }
+    },
+    {
+      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC02307-Pano.webp",
+      orientation: "horizontal" as Orientation,
+      camera: {
+        iso: 100,
+        aperture: "f/8",
+        shutterSpeed: "0.8s",
+        focalLength: "50mm"
+      }
+    },
   ]
 };
 
