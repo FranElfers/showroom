@@ -16,6 +16,7 @@ The project is built with Next.js App Router, using React Server Components by d
 - `app/components/PhotoShowroom.tsx`: Renders the cinematic view. Completely edge-to-edge layout with zero gaps. Horizontal photos use a 21:9 aspect ratio, while vertical photos pair up perfectly in two columns using a taller 4:5 aspect ratio.
 - `app/components/PhotoGrid.tsx`: Fixed 3-column edge-to-edge layout, capped at a maximum width of 1600px. Images are perfect 1:1 squares.
 - `app/components/PhotoCard.tsx`: Reusable grid item.
+- `app/components/CameraStats.tsx`: Reusable overlay that fades in on hover/tap to display camera metadata (ISO, aperture, shutter speed, focal length) using minimal SVG icons and a gradient background.
 - `app/constants.ts`: The mock database. Highly normalized—photos are grouped by actual categories (e.g. `sur`), and the "todos" (all) category is computed dynamically in `page.tsx`.
 
 ## Styling Conventions
@@ -26,7 +27,7 @@ The project is built with Next.js App Router, using React Server Components by d
 - **Image Quality & Caching**: Next.js `<Image />` optimization is disabled globally (`unoptimized: true`) to prevent aggressive compression, maintain the original clarity of Cloudflare WEBP assets, and allow the browser to efficiently cache the single URL without re-fetching on view changes.
 
 ## How to Extend the Project
-1. **Adding Photos**: Append objects to the respective category arrays in `export const photos` within `app/constants.ts`. Do not include a `category` attribute inside the photo objects.
+1. **Adding Photos**: Append objects to the respective category arrays in `export const photos` within `app/constants.ts`. Do not include a `category` attribute inside the photo objects. You can optionally include a `camera` object with `iso`, `aperture`, `shutterSpeed`, and `focalLength` to display EXIF data on hover.
 2. **Adding Categories**: Simply add a new array to the `photos` object in `constants.ts`. The `Navbar` automatically reads `Object.keys(photos)` to generate navigation tabs.
 3. **Adding Views**: If adding a new view mode, update the union type in `page.tsx` and add a new button in `ViewModeSwitch`.
 

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Photo } from "../constants";
+import { CameraStats } from "./CameraStats";
 
 interface PhotoShowroomProps {
   photos: Photo[];
@@ -12,7 +13,7 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
         {photos.map((photo, i) => {
           if (photo.orientation === "horizontal") {
             return (
-              <div key={`${photo.url}-${i}`} className="col-span-1 md:col-span-2 w-full flex">
+              <div key={`${photo.url}-${i}`} className="col-span-1 md:col-span-2 w-full flex relative group">
                 <Image
                   src={photo.url}
                   width={2560}
@@ -23,11 +24,12 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
                   sizes="100vw"
                   priority={i === 0}
                 />
+                <CameraStats camera={photo.camera} />
               </div>
             );
           } else {
             return (
-              <div key={`${photo.url}-${i}`} className="col-span-1 w-full flex">
+              <div key={`${photo.url}-${i}`} className="col-span-1 w-full flex relative group">
                 <Image
                   src={photo.url}
                   width={1440}
@@ -38,6 +40,7 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority={i < 2}
                 />
+                <CameraStats camera={photo.camera} />
               </div>
             );
           }
