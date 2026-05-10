@@ -23,7 +23,7 @@ The project is built with Next.js App Router, using React Server Components by d
 - **Typography**: Uses the default Sans font. Extremely subtle tracking (`tracking-[0.2em]`) and uppercase letters for navigation links.
 - **Colors**: Strictly monochrome. Pure black background (`#000000`, `bg-black/90`). Navigation text relies on high contrast. 
 - **Transitions**: CSS classes (`transition-all duration-500`, `fade-in`) are used extensively for subtle, elegant animations. The navbar uses `translate-y` for auto-hiding.
-- **Image Quality**: Next.js `<Image />` components are strictly set to `quality={100}` to prevent aggressive compression and maintain the original clarity of Cloudflare WEBP assets.
+- **Image Quality & Caching**: Next.js `<Image />` optimization is disabled globally (`unoptimized: true`) to prevent aggressive compression, maintain the original clarity of Cloudflare WEBP assets, and allow the browser to efficiently cache the single URL without re-fetching on view changes.
 
 ## How to Extend the Project
 1. **Adding Photos**: Append objects to the respective category arrays in `export const photos` within `app/constants.ts`. Do not include a `category` attribute inside the photo objects.
