@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Minimal Photography Portfolio
 
-## Getting Started
+A cinematic, minimalist photography portfolio built with Next.js (App Router), TypeScript, and TailwindCSS V4.
 
-First, run the development server:
+## Setup Instructions
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1. Install dependencies (we recommend pnpm as defined by the workspace lockfile, but npm/yarn work too):
+   ```bash
+   pnpm install
+   ```
+2. Start the development server:
+   ```bash
+   pnpm dev
+   ```
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Development Commands
+
+- `pnpm dev`: Starts the development server.
+- `pnpm build`: Builds the application for production.
+- `pnpm start`: Runs the built production server.
+- `pnpm lint`: Runs ESLint for code quality.
+
+## Project Structure
+
+```
+├── app/
+│   ├── components/
+│   │   ├── Navbar.tsx         # Main navigation
+│   │   ├── PhotoCard.tsx      # Grid image component
+│   │   ├── PhotoGrid.tsx      # Grid layout view
+│   │   ├── PhotoShowroom.tsx  # Cinematic layout view
+│   │   └── ViewModeSwitch.tsx # Toggle between Grid and Showroom
+│   ├── constants.ts           # Image data and definitions
+│   ├── globals.css            # Tailwind V4 and custom animations
+│   ├── layout.tsx             # Root layout
+│   └── page.tsx               # Main client application state
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How to Add New Photos/Categories
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+All photography data is managed in `app/constants.ts`. 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To add a photo, edit the `photos` object:
 
-## Learn More
+```typescript
+export const photos = {
+  todos: [
+    {
+      url: "https://your-image-url.com/image.jpg",
+      orientation: "horizontal", // or "vertical"
+      category: "sur"
+    }
+  ],
+  // ...
+}
+```
 
-To learn more about Next.js, take a look at the following resources:
+To add a new category:
+1. Update the `Category` type in `constants.ts`.
+2. Add a new key to the `photos` object.
+3. The Navbar will automatically render the new category if you update the array inside `app/components/Navbar.tsx`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment Instructions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is optimized for deployment on Vercel.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Push your code to a Git repository (GitHub, GitLab, BitBucket).
+2. Import the project in Vercel.
+3. Vercel will automatically detect Next.js and apply the correct build settings (`next build`).
+4. Click Deploy.
