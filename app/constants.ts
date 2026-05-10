@@ -16,6 +16,10 @@ export const photos = {
       orientation: "horizontal" as Orientation
     },
     {
+      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC03152.webp",
+      orientation: "horizontal" as Orientation
+    },
+    {
       url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC03215.webp",
       orientation: "vertical" as Orientation
     },
