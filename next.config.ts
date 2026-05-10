@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
         hostname: "pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev",
       },
     ],
-    qualities: [75, 100],
+    qualities: [25, 75, 100],
   },
 };
 

@@ -2,6 +2,7 @@ export type Orientation = "horizontal" | "vertical";
 
 export interface Photo {
   url: string;
+  urlLowQuality: string;
   orientation: Orientation;
   camera: {
     iso: number;
@@ -11,10 +12,13 @@ export interface Photo {
   }
 }
 
-export const photos = {
+const DOMAIN = "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/"
+
+export const photos: Record<string, Photo[]> = {
   sur: [
     {
-      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC03277.webp",
+      url: DOMAIN + "PIC03277.webp",
+      urlLowQuality: DOMAIN + "PIC03277-sm.webp",
       orientation: "horizontal" as Orientation,
       camera: {
         iso: 500,
@@ -24,7 +28,8 @@ export const photos = {
       }
     },
     {
-      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/Atardecer-full.webp",
+      url: DOMAIN + "PIC04257.webp",
+      urlLowQuality: DOMAIN + "PIC04257-sm.webp",
       orientation: "horizontal" as Orientation,
       camera: {
         iso: 1000,
@@ -34,7 +39,8 @@ export const photos = {
       }
     },
     {
-      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC03152.webp",
+      url: DOMAIN + "PIC03152.webp",
+      urlLowQuality: DOMAIN + "PIC03152-sm.webp",
       orientation: "horizontal" as Orientation,
       camera: {
         iso: 500,
@@ -44,7 +50,8 @@ export const photos = {
       }
     },
     {
-      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC03215.webp",
+      url: DOMAIN + "PIC03215.webp",
+      urlLowQuality: DOMAIN + "PIC03215-sm.webp",
       orientation: "vertical" as Orientation,
       camera: {
         iso: 125,
@@ -54,7 +61,8 @@ export const photos = {
       }
     },
     {
-      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC03308.webp",
+      url: DOMAIN + "PIC03308.webp",
+      urlLowQuality: DOMAIN + "PIC03308-sm.webp",
       orientation: "vertical" as Orientation,
       camera: {
         iso: 160,
@@ -64,7 +72,8 @@ export const photos = {
       }
     },
     {
-      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC03122.webp",
+      url: DOMAIN + "PIC03122.webp",
+      urlLowQuality: DOMAIN + "PIC03122-sm.webp",
       orientation: "horizontal" as Orientation,
       camera: {
         iso: 2000,
@@ -74,7 +83,8 @@ export const photos = {
       }
     },
     {
-      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC02099.webp",
+      url: DOMAIN + "PIC02099.webp",
+      urlLowQuality: DOMAIN + "PIC02099-sm.webp",
       orientation: "horizontal" as Orientation,
       camera: {
         iso: 100,
@@ -86,7 +96,8 @@ export const photos = {
   ],
   bsas: [
     {
-      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC02406-Pano.webp",
+      url: DOMAIN + "PIC02406-Pano.webp",
+      urlLowQuality: DOMAIN + "PIC02406-Pano-sm.webp",
       orientation: "horizontal" as Orientation,
       camera: {
         iso: 400,
@@ -96,7 +107,8 @@ export const photos = {
       }
     },
     {
-      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC02307-Pano.webp",
+      url: DOMAIN + "PIC02307-Pano.webp",
+      urlLowQuality: DOMAIN + "PIC02307-Pano-sm.webp",
       orientation: "horizontal" as Orientation,
       camera: {
         iso: 100,
