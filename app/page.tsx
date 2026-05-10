@@ -31,6 +31,15 @@ export default function Home() {
           <PhotoGrid photos={currentPhotos} />
         )}
       </div>
+
+      <div className="w-full pb-24 pt-12 flex justify-center mt-auto">
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="text-white uppercase tracking-[0.3em] text-xs transition-opacity duration-500 hover:opacity-50"
+        >
+          fin
+        </button>
+      </div>
     </main>
   );
 }

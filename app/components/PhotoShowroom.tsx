@@ -18,6 +18,7 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
                   width={2560}
                   height={1080}
                   alt="Photography"
+                  quality={100}
                   className="w-full h-auto md:aspect-[21/9] md:object-cover"
                   sizes="100vw"
                   priority={i === 0}
@@ -30,9 +31,10 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
                 <Image
                   src={photo.url}
                   width={1440}
-                  height={1440}
+                  height={1800}
                   alt="Photography"
-                  className="w-full h-auto md:aspect-square md:object-cover"
+                  quality={100}
+                  className="w-full h-auto md:aspect-[4/5] md:object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority={i < 2}
                 />

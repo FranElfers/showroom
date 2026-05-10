@@ -1,6 +1,6 @@
 # Minimal Photography Portfolio
 
-A cinematic, minimalist photography portfolio built with Next.js (App Router), TypeScript, and TailwindCSS V4.
+A cinematic, minimalist photography portfolio built with Next.js (App Router), TypeScript, and TailwindCSS V4. It features a sleek black background, seamless flush image grids, and high-fidelity photo rendering.
 
 ## Setup Instructions
 
@@ -26,40 +26,41 @@ A cinematic, minimalist photography portfolio built with Next.js (App Router), T
 ```
 ├── app/
 │   ├── components/
-│   │   ├── Navbar.tsx         # Main navigation
-│   │   ├── PhotoCard.tsx      # Grid image component
-│   │   ├── PhotoGrid.tsx      # Grid layout view
-│   │   ├── PhotoShowroom.tsx  # Cinematic layout view
+│   │   ├── Navbar.tsx         # Auto-hiding gradient navigation
+│   │   ├── PhotoCard.tsx      # Grid image component (quality=100)
+│   │   ├── PhotoGrid.tsx      # Fixed 3-column flush grid
+│   │   ├── PhotoShowroom.tsx  # Edge-to-edge cinematic layout (21:9 & 4:5 ratios)
 │   │   └── ViewModeSwitch.tsx # Toggle between Grid and Showroom
-│   ├── constants.ts           # Image data and definitions
-│   ├── globals.css            # Tailwind V4 and custom animations
+│   ├── constants.ts           # Normalized image database
+│   ├── globals.css            # Tailwind V4 and custom animations (black background)
 │   ├── layout.tsx             # Root layout
-│   └── page.tsx               # Main client application state
+│   └── page.tsx               # Main client application state & "fin" back-to-top
 ```
 
 ## How to Add New Photos/Categories
 
-All photography data is managed in `app/constants.ts`. 
+All photography data is highly normalized and managed in `app/constants.ts`. 
 
-To add a photo, edit the `photos` object:
+To add a photo, edit the `photos` object and place it inside the desired category array. The data structure strictly uses `url` and `orientation` (`"horizontal"` or `"vertical"`). 
 
 ```typescript
 export const photos = {
-  todos: [
+  sur: [
     {
       url: "https://your-image-url.com/image.jpg",
-      orientation: "horizontal", // or "vertical"
-      category: "sur"
+      orientation: "horizontal"
     }
   ],
-  // ...
+  norte: [ ... ]
 }
 ```
 
-To add a new category:
-1. Update the `Category` type in `constants.ts`.
-2. Add a new key to the `photos` object.
-3. The Navbar will automatically render the new category if you update the array inside `app/components/Navbar.tsx`.
+**Note on the "todos" category:**
+You do *not* need to maintain a separate "todos" array or include a `category` property. The `Navbar` automatically detects all category keys inside `constants.ts` and dynamic aggregates them into the "todos" tab in real-time. 
+
+## Image Optimization
+
+This project is configured to prioritize image quality. All Next.js `<Image />` tags explicitly use `quality={100}` to prevent Next.js from aggressively compressing pre-optimized high-quality assets (like `.webp` from Cloudflare R2).
 
 ## Deployment Instructions
 

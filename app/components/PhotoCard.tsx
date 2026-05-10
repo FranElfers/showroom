@@ -11,6 +11,7 @@ export function PhotoCard({ url }: PhotoCardProps) {
         src={url}
         alt="Portfolio image"
         fill
+        quality={100}
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         className="object-cover transition-transform duration-1000 group-hover:scale-105"
       />

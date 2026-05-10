@@ -8,30 +8,30 @@ export interface Photo {
 export const photos = {
   sur: [
     {
-      url: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?q=80&w=2070&auto=format&fit=crop",
+      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC03277.webp",
       orientation: "horizontal" as Orientation
     },
     {
-      url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop",
+      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/Atardecer-full.webp",
+      orientation: "horizontal" as Orientation
+    },
+    {
+      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC03215.webp",
       orientation: "vertical" as Orientation
     },
     {
-      url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop",
+      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC03308.webp",
       orientation: "vertical" as Orientation
-    }
+    },
+    {
+      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC03122.webp",
+      orientation: "horizontal" as Orientation
+    },
   ],
   norte: [
     {
-      url: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=2074&auto=format&fit=crop",
+      url: "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/PIC02099.webp",
       orientation: "horizontal" as Orientation
-    },
-    {
-      url: "https://images.unsplash.com/photo-1506744626753-1fa44df14d28?q=80&w=1964&auto=format&fit=crop",
-      orientation: "vertical" as Orientation
-    },
-    {
-      url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop",
-      orientation: "vertical" as Orientation
     }
   ]
 };
