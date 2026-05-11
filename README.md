@@ -28,12 +28,14 @@ A cinematic, minimalist photography portfolio built with Next.js (App Router), T
 │   ├── components/
 │   │   ├── CameraStats.tsx    # EXIF overlay (hover on tiles, always on in lightbox)
 │   │   ├── Navbar.tsx         # Auto-hiding gradient navigation
-│   │   ├── PhotoCard.tsx      # Grid tile; optional lightbox trigger
+│   │   ├── PhotoCard.tsx      # Grid tile; optimizer + optional lightbox + prefetch
 │   │   ├── PhotoGrid.tsx      # 3-column grid + lightbox state
-│   │   ├── PhotoLightbox.tsx  # Full-screen modal (portal); full-res image + close
+│   │   ├── PhotoLightbox.tsx  # Full-screen modal (portal); underlay + full-res + close
 │   │   ├── PhotoShowroom.tsx  # Cinematic layout (2:1 horizontal, 4:5 vertical md+)
 │   │   └── ViewModeSwitch.tsx # Toggle between Grid and Showroom
-│   ├── constants.ts           # Normalized image database (`url` + `urlLowQuality`)
+│   ├── lib/
+│   │   └── prefetchImage.ts   # Deduped hover/lightbox prefetch into HTTP cache
+│   ├── constants.ts           # Photos DB, `GRID_IMAGE_SIZES`, category types
 │   ├── globals.css            # Tailwind V4, fade-in, hidden scrollbars
 │   ├── layout.tsx             # Root layout
 │   └── page.tsx               # Main client application state & "fin" back-to-top
@@ -69,9 +71,13 @@ You do *not* need to maintain a separate "todos" array or include a `category` p
 
 ## Image optimization and grid lightbox
 
-Next.js `<Image />` is set to **`unoptimized`** in config so remote WEBP URLs are not re-encoded; the app relies on pre-exported assets. **Showroom** and the **grid lightbox** use the full `url` with high `quality`. **Grid thumbnails** use `urlLowQuality` and a lower `quality` value to keep scrolling light.
+**Showroom** and **lightbox** `<Image />` use **`unoptimized`** so full `url` WEBPs are served as-is from R2.
 
-**Grid mode:** click a tile to open a full-screen lightbox (Escape, backdrop, or X to close). The lightbox is portaled to `document.body` so it is not affected by CSS `transform` on the page.
+**Grid** thumbnails use `urlLowQuality` through Next’s Image Optimization (`quality={75}` in `PhotoCard`). The **`sizes`** attribute comes from **`GRID_IMAGE_SIZES`** in `app/constants.ts`—edit that string to calibrate thumbnail resolution (the last `px` value on large viewports is the main sharpness vs. bandwidth knob). `next.config.ts` defines `images.qualities` and `images.remotePatterns` for R2.
+
+**Prefetch:** Hovering or focusing a grid tile (and opening the lightbox) uses `app/lib/prefetchImage.ts` so repeated interactions share one in-flight fetch per URL when possible. Strong **`Cache-Control`** on R2 still improves cache hits.
+
+**Grid mode:** Click a tile to open a full-screen lightbox. A low-res underlay appears immediately; full resolution fades in when ready. Escape, backdrop, or X closes the modal. The lightbox is portaled to `document.body` so it is not clipped by CSS `transform` on the page.
 
 **Scrollbars:** `globals.css` hides native scrollbars on `html` and `body` while keeping scroll behavior, which avoids layout shift when the lightbox toggles `overflow: hidden` on `body`.
 

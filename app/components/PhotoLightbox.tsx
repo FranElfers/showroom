@@ -1,10 +1,11 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import Image from "next/image"
 
 import { Photo } from "../constants"
+import { prefetchImage } from "../lib/prefetchImage"
 import { CameraStats } from "./CameraStats"
 
 /** Duration (ms) for backdrop/content fade and scale; must match Tailwind `duration-300` on the modal. */
@@ -44,8 +45,18 @@ function CloseIcon() {
  */
 export function PhotoLightbox({ photo, onClose }: PhotoLightboxProps) {
   const [open, setOpen] = useState(false)
+  /** Full-res decode finished; until then the grid thumbnail stays visible (usually cached). */
+  const [fullResReady, setFullResReady] = useState(false)
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closingRef = useRef(false)
+
+  useEffect(() => {
+    setFullResReady(false)
+  }, [photo.url])
+
+  useLayoutEffect(() => {
+    prefetchImage(photo.url)?.catch(() => {})
+  }, [photo.url])
 
   /** Runs the exit animation, then invokes `onClose`. Ignored while a close is already in progress. */
   const requestClose = useCallback(() => {
@@ -109,13 +120,25 @@ export function PhotoLightbox({ photo, onClose }: PhotoLightboxProps) {
           role="presentation"
         >
           <div className="relative group max-h-[calc(100dvh-2rem)] max-w-[calc(100dvw-2rem)]">
+            <img
+              src={photo.urlLowQuality}
+              alt=""
+              aria-hidden
+              className={`block h-auto max-h-[calc(100dvh-2rem)] w-auto max-w-[calc(100dvw-2rem)] object-contain transition-opacity duration-300 ${
+                fullResReady ? "opacity-0" : "opacity-100"
+              }`}
+            />
             <Image
               src={photo.url}
               width={2560}
               height={1700}
               alt="Photography"
               quality={100}
-              className="block h-auto max-h-[calc(100dvh-2rem)] w-auto max-w-[calc(100dvw-2rem)] object-contain"
+              unoptimized
+              onLoadingComplete={() => setFullResReady(true)}
+              className={`absolute left-1/2 top-1/2 block h-auto max-h-[calc(100dvh-2rem)] w-auto max-w-[calc(100dvw-2rem)] -translate-x-1/2 -translate-y-1/2 object-contain transition-opacity duration-300 ${
+                fullResReady ? "opacity-100" : "opacity-0"
+              }`}
               sizes="100vw"
               priority
             />

@@ -27,6 +27,7 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
                   fill
                   alt="Photography"
                   quality={100}
+                  unoptimized
                   className="object-cover"
                   sizes="100vw"
                   priority={i === 0}
@@ -43,6 +44,7 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
                   height={1800}
                   alt="Photography"
                   quality={100}
+                  unoptimized
                   className="w-full h-auto md:aspect-[4/5] md:object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority={i < 2}

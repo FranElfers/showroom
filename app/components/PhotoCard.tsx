@@ -1,5 +1,6 @@
 import Image from "next/image"
-import { Photo } from "../constants"
+import { prefetchImage } from "../lib/prefetchImage"
+import { GRID_IMAGE_SIZES, Photo } from "../constants"
 import { CameraStats } from "./CameraStats"
 
 /** Props for {@link PhotoCard}. */
@@ -26,8 +27,9 @@ export function PhotoCard({ photo, useLowQuality, onOpen }: PhotoCardProps) {
         src={src}
         alt="Portfolio image"
         fill
-        quality={25}
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        quality={useLowQuality ? 75 : 100}
+        unoptimized={!useLowQuality}
+        sizes={GRID_IMAGE_SIZES}
         className="object-cover"
       />
       <CameraStats camera={photo.camera} />
@@ -36,7 +38,17 @@ export function PhotoCard({ photo, useLowQuality, onOpen }: PhotoCardProps) {
 
   if (onOpen) {
     return (
-      <button type="button" onClick={onOpen} className={`${shellClass} block w-full cursor-pointer`}>
+      <button
+        type="button"
+        onClick={onOpen}
+        onMouseEnter={() => {
+          prefetchImage(photo.url)?.catch(() => {})
+        }}
+        onFocus={() => {
+          prefetchImage(photo.url)?.catch(() => {})
+        }}
+        className={`${shellClass} block w-full cursor-pointer`}
+      >
         {inner}
       </button>
     )

@@ -16,6 +16,15 @@ export interface Photo {
   }
 }
 
+/**
+ * `sizes` value for grid thumbnails in `PhotoCard` (Next.js image optimization).
+ * The last length (large viewports, 3-column row) is the main sharpness/bandwidth knob;
+ * raise it for crisper tiles, lower for smaller `_next/image` payloads. Smaller viewports
+ * use a share of the viewport per column (`34vw` ≈ one of three grid cells).
+ */
+export const GRID_IMAGE_SIZES =
+  "(max-width: 1024px) 34vw, 900px"
+
 const DOMAIN = "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/"
 
 /**

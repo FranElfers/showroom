@@ -23,7 +23,7 @@ export function CameraStats({ camera, alwaysVisible }: CameraStatsProps) {
 
   return (
     <div
-      className={`absolute inset-x-0 bottom-0 p-4 pt-16 bg-gradient-to-t from-black/30 to-transparent flex flex-wrap items-center justify-around gap-y-2 ${visibility} transition-opacity duration-300 pointer-events-none text-white text-xs tracking-widest z-10`}
+      className={`absolute inset-x-0 bottom-0 p-4 pt-16 bg-gradient-to-t from-black/40 to-transparent flex flex-wrap items-center justify-around gap-y-2 ${visibility} transition-opacity duration-300 pointer-events-none text-white text-xs tracking-widest z-10`}
     >
       <div className="flex items-center gap-2">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
