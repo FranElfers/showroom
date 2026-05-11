@@ -47,6 +47,8 @@ export function PhotoLightbox({ photo, onClose }: PhotoLightboxProps) {
   const [open, setOpen] = useState(false)
   /** Full-res decode finished; until then the grid thumbnail stays visible (usually cached). */
   const [fullResReady, setFullResReady] = useState(false)
+  /** Avoid `createPortal(..., document.body)` during SSR / prerender where `document` is undefined. */
+  const [portalEl, setPortalEl] = useState<HTMLElement | null>(null)
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closingRef = useRef(false)
 
@@ -71,6 +73,11 @@ export function PhotoLightbox({ photo, onClose }: PhotoLightboxProps) {
   }, [onClose])
 
   useEffect(() => {
+    setPortalEl(document.body)
+  }, [])
+
+  useEffect(() => {
+    if (!portalEl) return
     const prev = document.body.style.overflow
     document.body.style.overflow = "hidden"
     const id = requestAnimationFrame(() => setOpen(true))
@@ -79,7 +86,7 @@ export function PhotoLightbox({ photo, onClose }: PhotoLightboxProps) {
       document.body.style.overflow = prev
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current)
     }
-  }, [])
+  }, [portalEl])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -135,7 +142,7 @@ export function PhotoLightbox({ photo, onClose }: PhotoLightboxProps) {
               alt="Photography"
               quality={100}
               unoptimized
-              onLoadingComplete={() => setFullResReady(true)}
+              onLoad={() => setFullResReady(true)}
               className={`absolute left-1/2 top-1/2 block h-auto max-h-[calc(100dvh-2rem)] w-auto max-w-[calc(100dvw-2rem)] -translate-x-1/2 -translate-y-1/2 object-contain transition-opacity duration-300 ${
                 fullResReady ? "opacity-100" : "opacity-0"
               }`}
@@ -149,5 +156,7 @@ export function PhotoLightbox({ photo, onClose }: PhotoLightboxProps) {
     </div>
   )
 
-  return createPortal(modal, document.body)
+  if (!portalEl) return null
+
+  return createPortal(modal, portalEl)
 }

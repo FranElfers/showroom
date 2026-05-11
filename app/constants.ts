@@ -137,5 +137,19 @@ export const photos: Record<string, Photo[]> = {
   ]
 }
 
+export const photosDev: Record<string, Photo[]> = {
+  bsas: new Array(8).fill({
+    url: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?q=80&w=2070&auto=format&fit=crop",
+    urlLowQuality: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?q=80&w=2070&auto=format&fit=crop",
+    orientation: "horizontal" as Orientation,
+    camera: {
+      iso: 500,
+      aperture: "f/9",
+      shutterSpeed: "1/800s",
+      focalLength: "16mm"
+    }
+  })
+}
+
 /** Navbar selection: aggregate tab or a key of {@link photos}. */
 export type Category = "todos" | keyof typeof photos

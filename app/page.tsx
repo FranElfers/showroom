@@ -1,36 +1,133 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Navbar } from "./components/Navbar";
 import { PhotoShowroom } from "./components/PhotoShowroom";
 import { PhotoGrid } from "./components/PhotoGrid";
-import { photos, Category } from "./constants";
+import { PhotoLightbox } from "./components/PhotoLightbox";
+import { photos, Category, Photo } from "./constants";
+import {
+  findCategoryForPhoto,
+  findPhotoBySlug,
+  slugFromPhotoUrl,
+} from "./lib/photoSlug";
 
-export default function Home() {
-  const [category, setCategory] = useState<Category>("todos");
-  const [view, setView] = useState<"showroom" | "grid">("showroom");
+const ALL_PHOTOS = Object.values(photos).flat();
+
+type ViewMode = "showroom" | "grid";
+
+function parseCategory(raw: string | null): Category {
+  if (!raw) return "todos";
+  if (raw === "todos") return "todos";
+  if (raw in photos) return raw as Category;
+  return "todos";
+}
+
+function parseView(raw: string | null): ViewMode {
+  if (raw === "grid") return "grid";
+  return "showroom";
+}
+
+function buildQuery(state: {
+  category: Category;
+  view: ViewMode;
+  photo?: string | null;
+}): string {
+  const params = new URLSearchParams();
+  if (state.category !== "todos") params.set("category", state.category);
+  if (state.view !== "showroom") params.set("view", state.view);
+  if (state.photo) params.set("photo", state.photo);
+  const s = params.toString();
+  return s ? `?${s}` : "";
+}
+
+function HomeContent() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const category = parseCategory(searchParams.get("category"));
+  const view = parseView(searchParams.get("view"));
+  const photoSlugRaw = searchParams.get("photo");
+  const photoSlug = photoSlugRaw?.trim() || null;
+
+  const lightboxPhoto =
+    photoSlug != null ? findPhotoBySlug(photoSlug, ALL_PHOTOS) : undefined;
 
   const currentPhotos =
     category === "todos"
-      ? Object.values(photos).flat()
+      ? ALL_PHOTOS
       : photos[category as keyof typeof photos] || [];
+
+  useEffect(() => {
+    if (!photoSlug || lightboxPhoto) return;
+    router.replace(pathname + buildQuery({ category, view, photo: null }), {
+      scroll: false,
+    });
+  }, [photoSlug, lightboxPhoto, router, pathname, category, view]);
+
+  useEffect(() => {
+    if (!lightboxPhoto || !photoSlug) return;
+    if (category === "todos") return;
+    const list = photos[category as keyof typeof photos] || [];
+    const visible = list.some((p) => p.url === lightboxPhoto.url);
+    if (visible) return;
+    const bucket = findCategoryForPhoto(lightboxPhoto);
+    const nextCat: Category = bucket ?? "todos";
+    router.replace(
+      pathname + buildQuery({ category: nextCat, view, photo: photoSlug }),
+      { scroll: false },
+    );
+  }, [lightboxPhoto, photoSlug, category, view, pathname, router]);
+
+  const replaceState = (next: {
+    category: Category;
+    view: ViewMode;
+    photo?: string | null;
+  }) => {
+    router.replace(pathname + buildQuery(next), { scroll: false });
+  };
+
+  const onCategoryChange = (c: Category) => {
+    replaceState({ category: c, view, photo: null });
+  };
+
+  const onViewChange = (v: ViewMode) => {
+    replaceState({ category, view: v, photo: photoSlug });
+  };
+
+  const onOpenPhoto = (photo: Photo) => {
+    const slug = slugFromPhotoUrl(photo.url);
+    router.push(pathname + buildQuery({ category, view, photo: slug }), {
+      scroll: false,
+    });
+  };
+
+  const onCloseLightbox = () => {
+    replaceState({ category, view, photo: null });
+  };
 
   return (
     <main className="min-h-screen bg-black/90">
       <Navbar
         currentCategory={category}
         currentView={view}
-        onCategoryChange={setCategory}
-        onViewChange={setView}
+        onCategoryChange={onCategoryChange}
+        onViewChange={onViewChange}
       />
 
       <div key={`${category}-${view}`}>
         {view === "showroom" ? (
           <PhotoShowroom photos={currentPhotos} />
         ) : (
-          <PhotoGrid photos={currentPhotos} />
+          <PhotoGrid photos={currentPhotos} onOpenPhoto={onOpenPhoto} />
         )}
       </div>
+
+      {lightboxPhoto ? (
+        <PhotoLightbox photo={lightboxPhoto} onClose={onCloseLightbox} />
+      ) : null}
 
       <div className="w-full pb-24 pt-12 flex justify-center mt-auto">
         <button
@@ -41,5 +138,15 @@ export default function Home() {
         </button>
       </div>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense
+      fallback={<main className="min-h-screen bg-black/90" aria-hidden />}
+    >
+      <HomeContent />
+    </Suspense>
   );
 }

@@ -1,22 +1,20 @@
 "use client"
 
-import { useState } from "react"
 import { Photo } from "../constants"
 import { PhotoCard } from "./PhotoCard"
-import { PhotoLightbox } from "./PhotoLightbox"
 
 /** Props for {@link PhotoGrid}. */
 interface PhotoGridProps {
   /** Photos for the current category (or flattened “todos” list from the page). */
   photos: Photo[]
+  /** Opens the lightbox; parent should update the URL (e.g. `photo` query). */
+  onOpenPhoto: (photo: Photo) => void
 }
 
 /**
- * Three-column thumbnail grid with low-res assets; clicking a tile opens {@link PhotoLightbox}.
+ * Three-column thumbnail grid with low-res assets; clicking a tile calls {@link onOpenPhoto}.
  */
-export function PhotoGrid({ photos }: PhotoGridProps) {
-  const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null)
-
+export function PhotoGrid({ photos, onOpenPhoto }: PhotoGridProps) {
   return (
     <div className="mx-auto max-w-[1600px] pt-20 pb-24 fade-in">
       <div className="grid grid-cols-3">
@@ -25,13 +23,10 @@ export function PhotoGrid({ photos }: PhotoGridProps) {
             key={`${photo.url}-${i}`}
             photo={photo}
             useLowQuality={true}
-            onOpen={() => setLightboxPhoto(photo)}
+            onOpen={() => onOpenPhoto(photo)}
           />
         ))}
       </div>
-      {lightboxPhoto ? (
-        <PhotoLightbox photo={lightboxPhoto} onClose={() => setLightboxPhoto(null)} />
-      ) : null}
     </div>
   )
 }
