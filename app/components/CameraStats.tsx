@@ -1,14 +1,30 @@
-import { Photo } from "../constants";
+import { Photo } from "../constants"
 
+/** Props for {@link CameraStats}. */
 interface CameraStatsProps {
-  camera?: Photo["camera"];
+  /** EXIF bundle from the parent photo; if missing, nothing is rendered. */
+  camera?: Photo["camera"]
+  /**
+   * When `true`, the strip stays opaque (e.g. lightbox). When `false`, fades in with
+   * the parent’s `group-hover`.
+   */
+  alwaysVisible?: boolean
 }
 
-export function CameraStats({ camera }: CameraStatsProps) {
-  if (!camera) return null;
+/**
+ * Bottom gradient strip with aperture, shutter, ISO, and focal length icons + text.
+ */
+export function CameraStats({ camera, alwaysVisible }: CameraStatsProps) {
+  if (!camera) return null
+
+  const visibility = alwaysVisible
+    ? "opacity-100"
+    : "opacity-0 group-hover:opacity-100"
 
   return (
-    <div className="absolute inset-x-0 bottom-0 p-4 pt-16 bg-gradient-to-t from-black/30 to-transparent flex flex-wrap items-center justify-around gap-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-white text-xs tracking-widest z-10">
+    <div
+      className={`absolute inset-x-0 bottom-0 p-4 pt-16 bg-gradient-to-t from-black/30 to-transparent flex flex-wrap items-center justify-around gap-y-2 ${visibility} transition-opacity duration-300 pointer-events-none text-white text-xs tracking-widest z-10`}
+    >
       <div className="flex items-center gap-2">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="10" />
@@ -42,5 +58,5 @@ export function CameraStats({ camera }: CameraStatsProps) {
         <span>{camera.focalLength}</span>
       </div>
     </div>
-  );
+  )
 }

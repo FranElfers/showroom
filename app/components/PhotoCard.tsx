@@ -1,18 +1,27 @@
-import Image from "next/image";
+import Image from "next/image"
+import { Photo } from "../constants"
+import { CameraStats } from "./CameraStats"
 
-import { Photo } from "../constants";
-import { CameraStats } from "./CameraStats";
-
+/** Props for {@link PhotoCard}. */
 interface PhotoCardProps {
-  photo: Photo;
-  useLowQuality: boolean;
+  photo: Photo
+  /** When true, loads `photo.urlLowQuality` instead of `photo.url`. */
+  useLowQuality: boolean
+  /** If set, the tile renders as a `<button>` and invokes this handler (e.g. open lightbox). */
+  onOpen?: () => void
 }
 
-export function PhotoCard({ photo, useLowQuality }: PhotoCardProps) {
-  const src = useLowQuality ? photo.urlLowQuality : photo.url;
+/**
+ * Square grid cell with cover-cropped image and hover {@link CameraStats}.
+ */
+export function PhotoCard({ photo, useLowQuality, onOpen }: PhotoCardProps) {
+  const src = useLowQuality ? photo.urlLowQuality : photo.url
 
-  return (
-    <div className="relative w-full aspect-square overflow-hidden group">
+  const shellClass =
+    "relative w-full aspect-square overflow-hidden group border-0 bg-transparent p-0"
+
+  const inner = (
+    <>
       <Image
         src={src}
         alt="Portfolio image"
@@ -22,6 +31,16 @@ export function PhotoCard({ photo, useLowQuality }: PhotoCardProps) {
         className="object-cover"
       />
       <CameraStats camera={photo.camera} />
-    </div>
-  );
+    </>
+  )
+
+  if (onOpen) {
+    return (
+      <button type="button" onClick={onOpen} className={`${shellClass} block w-full cursor-pointer`}>
+        {inner}
+      </button>
+    )
+  }
+
+  return <div className={shellClass}>{inner}</div>
 }

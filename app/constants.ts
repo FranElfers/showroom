@@ -1,19 +1,27 @@
-export type Orientation = "horizontal" | "vertical";
+/** Landscape vs portrait slot behavior in showroom and grid. */
+export type Orientation = "horizontal" | "vertical"
 
+/** One image record: full + thumbnail URLs, layout role, and EXIF for overlays. */
 export interface Photo {
-  url: string;
-  urlLowQuality: string;
-  orientation: Orientation;
+  /** Full-resolution asset (showroom, grid lightbox). */
+  url: string
+  /** Smaller asset for grid thumbnails. */
+  urlLowQuality: string
+  orientation: Orientation
   camera: {
-    iso: number;
-    aperture: string;
-    shutterSpeed: string;
-    focalLength: string;
+    iso: number
+    aperture: string
+    shutterSpeed: string
+    focalLength: string
   }
 }
 
 const DOMAIN = "https://pub-5958fc211cfb4fe3b82f038c6d7b08b7.r2.dev/"
 
+/**
+ * Canonical photo buckets by category key. Keys drive {@link Navbar} tabs
+ * `"todos"` is synthetic and built in `page.tsx` from `Object.values(photos).flat()`.
+ */
 export const photos: Record<string, Photo[]> = {
   sur: [
     {
@@ -118,6 +126,7 @@ export const photos: Record<string, Photo[]> = {
       }
     },
   ]
-};
+}
 
-export type Category = "todos" | keyof typeof photos;
+/** Navbar selection: aggregate tab or a key of {@link photos}. */
+export type Category = "todos" | keyof typeof photos

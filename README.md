@@ -26,13 +26,15 @@ A cinematic, minimalist photography portfolio built with Next.js (App Router), T
 ```
 ├── app/
 │   ├── components/
+│   │   ├── CameraStats.tsx    # EXIF overlay (hover on tiles, always on in lightbox)
 │   │   ├── Navbar.tsx         # Auto-hiding gradient navigation
-│   │   ├── PhotoCard.tsx      # Grid image component (quality=100)
-│   │   ├── PhotoGrid.tsx      # Fixed 3-column flush grid
-│   │   ├── PhotoShowroom.tsx  # Edge-to-edge cinematic layout (21:9 & 4:5 ratios)
+│   │   ├── PhotoCard.tsx      # Grid tile; optional lightbox trigger
+│   │   ├── PhotoGrid.tsx      # 3-column grid + lightbox state
+│   │   ├── PhotoLightbox.tsx  # Full-screen modal (portal); full-res image + close
+│   │   ├── PhotoShowroom.tsx  # Cinematic layout (2:1 horizontal, 4:5 vertical md+)
 │   │   └── ViewModeSwitch.tsx # Toggle between Grid and Showroom
-│   ├── constants.ts           # Normalized image database
-│   ├── globals.css            # Tailwind V4 and custom animations (black background)
+│   ├── constants.ts           # Normalized image database (`url` + `urlLowQuality`)
+│   ├── globals.css            # Tailwind V4, fade-in, hidden scrollbars
 │   ├── layout.tsx             # Root layout
 │   └── page.tsx               # Main client application state & "fin" back-to-top
 ```
@@ -41,26 +43,37 @@ A cinematic, minimalist photography portfolio built with Next.js (App Router), T
 
 All photography data is highly normalized and managed in `app/constants.ts`. 
 
-To add a photo, edit the `photos` object and place it inside the desired category array. The data structure strictly uses `url` and `orientation` (`"horizontal"` or `"vertical"`). 
+To add a photo, edit the `photos` object and place it inside the desired category array. Each entry needs `url` (full-size, used in showroom and lightbox), **`urlLowQuality`** (smaller asset for the grid), `orientation` (`"horizontal"` | `"vertical"`), and a `camera` object for EXIF overlays.
 
 ```typescript
 export const photos = {
   sur: [
     {
-      url: "https://your-image-url.com/image.jpg",
-      orientation: "horizontal"
-    }
+      url: "https://your-cdn.com/image.webp",
+      urlLowQuality: "https://your-cdn.com/image-sm.webp",
+      orientation: "horizontal",
+      camera: {
+        iso: 400,
+        aperture: "f/8",
+        shutterSpeed: "1/250s",
+        focalLength: "35mm",
+      },
+    },
   ],
-  norte: [ ... ]
-}
+  norte: [/* ... */],
+};
 ```
 
 **Note on the "todos" category:**
 You do *not* need to maintain a separate "todos" array or include a `category` property. The `Navbar` automatically detects all category keys inside `constants.ts` and dynamic aggregates them into the "todos" tab in real-time. 
 
-## Image Optimization
+## Image optimization and grid lightbox
 
-This project is configured to prioritize image quality. All Next.js `<Image />` tags explicitly use `quality={100}` to prevent Next.js from aggressively compressing pre-optimized high-quality assets (like `.webp` from Cloudflare R2).
+Next.js `<Image />` is set to **`unoptimized`** in config so remote WEBP URLs are not re-encoded; the app relies on pre-exported assets. **Showroom** and the **grid lightbox** use the full `url` with high `quality`. **Grid thumbnails** use `urlLowQuality` and a lower `quality` value to keep scrolling light.
+
+**Grid mode:** click a tile to open a full-screen lightbox (Escape, backdrop, or X to close). The lightbox is portaled to `document.body` so it is not affected by CSS `transform` on the page.
+
+**Scrollbars:** `globals.css` hides native scrollbars on `html` and `body` while keeping scroll behavior, which avoids layout shift when the lightbox toggles `overflow: hidden` on `body`.
 
 ## Deployment Instructions
 
