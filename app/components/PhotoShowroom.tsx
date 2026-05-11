@@ -13,14 +13,16 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
         {photos.map((photo, i) => {
           if (photo.orientation === "horizontal") {
             return (
-              <div key={`${photo.url}-${i}`} className="col-span-1 md:col-span-2 w-full flex relative group">
+              <div
+                key={`${photo.url}-${i}`}
+                className="col-span-1 md:col-span-2 relative w-full aspect-[2/1] overflow-hidden group"
+              >
                 <Image
                   src={photo.url}
-                  width={2560}
-                  height={1080}
+                  fill
                   alt="Photography"
                   quality={100}
-                  className="w-full h-auto md:aspect-[18/9] md:object-cover"
+                  className="object-cover"
                   sizes="100vw"
                   priority={i === 0}
                 />
