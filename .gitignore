@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# png-to-webp
+png-to-webp/input/*
+png-to-webp/output
