@@ -2,6 +2,8 @@
 
 A cinematic, minimalist photography portfolio built with Next.js (App Router), TypeScript, and TailwindCSS V4. It features a sleek black background, seamless flush image grids, and high-fidelity photo rendering.
 
+![Preview](preview.png)
+
 ## Setup Instructions
 
 1. Install dependencies (we recommend pnpm as defined by the workspace lockfile, but npm/yarn work too):
@@ -44,7 +46,7 @@ A cinematic, minimalist photography portfolio built with Next.js (App Router), T
 
 ## How to Add New Photos/Categories
 
-All photography data is highly normalized and managed in `app/constants.ts`. 
+All photography data is highly normalized and managed in `app/constants.ts`.
 
 To add a photo, edit the `photos` object and place it inside the desired category array. Each entry needs `url` (full-size, used in showroom and lightbox), **`urlLowQuality`** (smaller asset for the grid), `orientation` (`"horizontal"` | `"vertical"`), and a `camera` object for EXIF overlays.
 
@@ -52,33 +54,33 @@ To add a photo, edit the `photos` object and place it inside the desired categor
 export const photos = {
   sur: [
     {
-      url: "https://your-cdn.com/image.webp",
-      urlLowQuality: "https://your-cdn.com/image-sm.webp",
-      orientation: "horizontal",
+      url: 'https://your-cdn.com/image.webp',
+      urlLowQuality: 'https://your-cdn.com/image-sm.webp',
+      orientation: 'horizontal',
       camera: {
         iso: 400,
-        aperture: "f/8",
-        shutterSpeed: "1/250s",
-        focalLength: "35mm",
+        aperture: 'f/8',
+        shutterSpeed: '1/250s',
+        focalLength: '35mm',
       },
     },
   ],
   norte: [/* ... */],
-};
+}
 ```
 
 **Note on the "todos" category:**
-You do *not* need to maintain a separate "todos" array or include a `category` property. The `Navbar` automatically detects all category keys inside `constants.ts` and aggregates them into the "todos" tab in real time.
+You do _not_ need to maintain a separate "todos" array or include a `category` property. The `Navbar` automatically detects all category keys inside `constants.ts` and aggregates them into the "todos" tab in real time.
 
 ## URLs and deep links
 
 UI state is reflected in the query string (defaults are omitted for a clean `/`):
 
-| Query param | Meaning | If omitted |
-|---------------|---------|--------------|
-| `category` | `todos` or any key of `photos` in `constants.ts` | `todos` (all photos) |
-| `view` | `showroom` or `grid` | `showroom` |
-| `photo` | Filename / last segment of the photo’s full `url` (URL-encoded when needed) | No lightbox |
+| Query param | Meaning                                                                     | If omitted           |
+| ----------- | --------------------------------------------------------------------------- | -------------------- |
+| `category`  | `todos` or any key of `photos` in `constants.ts`                            | `todos` (all photos) |
+| `view`      | `showroom` or `grid`                                                        | `showroom`           |
+| `photo`     | Filename / last segment of the photo’s full `url` (URL-encoded when needed) | No lightbox          |
 
 Examples: `/?view=grid`, `/?category=sur&view=grid&photo=PIC03277.webp`. Opening a link with `photo` in a new tab opens the lightbox after hydration; invalid slugs are stripped from the URL.
 
