@@ -104,6 +104,23 @@ function HomeContent() {
     });
   };
 
+  const lightboxIndex = lightboxPhoto
+    ? currentPhotos.findIndex((p) => p.url === lightboxPhoto.url)
+    : -1;
+  const canNavigate = lightboxIndex !== -1 && currentPhotos.length > 1;
+
+  /** Moves the lightbox `step` photos within the current category, wrapping at the ends. */
+  const stepLightbox = (step: number) => {
+    const n = currentPhotos.length;
+    const target = currentPhotos[(lightboxIndex + step + n) % n];
+    // replace (not push) so Back still leaves the lightbox in one step.
+    replaceState({
+      category,
+      view,
+      photo: slugFromPhotoUrl(target.url),
+    });
+  };
+
   const onCloseLightbox = () => {
     replaceState({ category, view, photo: null });
   };
@@ -126,7 +143,23 @@ function HomeContent() {
       </div>
 
       {lightboxPhoto ? (
-        <PhotoLightbox photo={lightboxPhoto} onClose={onCloseLightbox} />
+        <PhotoLightbox
+          photo={lightboxPhoto}
+          onClose={onCloseLightbox}
+          onPrev={canNavigate ? () => stepLightbox(-1) : undefined}
+          onNext={canNavigate ? () => stepLightbox(1) : undefined}
+          prefetchUrls={
+            canNavigate
+              ? [-1, 1].map(
+                  (d) =>
+                    currentPhotos[
+                      (lightboxIndex + d + currentPhotos.length) %
+                        currentPhotos.length
+                    ].url,
+                )
+              : undefined
+          }
+        />
       ) : null}
 
       <div className="w-full pb-24 pt-12 flex justify-center mt-auto">

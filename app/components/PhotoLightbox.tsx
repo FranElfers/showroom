@@ -17,6 +17,12 @@ interface PhotoLightboxProps {
   photo: Photo
   /** Called after the close animation finishes; parent should clear lightbox state. */
   onClose: () => void
+  /** Shows the previous photo (ArrowLeft). Omit to disable keyboard navigation. */
+  onPrev?: () => void
+  /** Shows the next photo (ArrowRight). Omit to disable keyboard navigation. */
+  onNext?: () => void
+  /** Full-res URLs of neighbouring photos, prefetched so arrow navigation feels instant. */
+  prefetchUrls?: string[]
 }
 
 /** Minimal X icon for the fixed close control. */
@@ -43,22 +49,27 @@ function CloseIcon() {
  * centered image with EXIF strip, and deferred `onClose` after exit animation.
  * Locks page scroll via `document.body.style.overflow` while mounted.
  */
-export function PhotoLightbox({ photo, onClose }: PhotoLightboxProps) {
+export function PhotoLightbox({ photo, onClose, onPrev, onNext, prefetchUrls }: PhotoLightboxProps) {
   const [open, setOpen] = useState(false)
-  /** Full-res decode finished; until then the grid thumbnail stays visible (usually cached). */
-  const [fullResReady, setFullResReady] = useState(false)
+  /** Arrow pressed last; picks the slide-in side for the new photo (null on first open). */
+  const [direction, setDirection] = useState<"prev" | "next" | null>(null)
+  /** URL whose full-res load finished; until it matches `photo.url` the thumbnail stays visible. */
+  const [readyUrl, setReadyUrl] = useState<string | null>(null)
+  const fullResReady = readyUrl === photo.url
   /** Avoid `createPortal(..., document.body)` during SSR / prerender where `document` is undefined. */
   const [portalEl, setPortalEl] = useState<HTMLElement | null>(null)
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closingRef = useRef(false)
 
-  useEffect(() => {
-    setFullResReady(false)
-  }, [photo.url])
-
   useLayoutEffect(() => {
     prefetchImage(photo.url)?.catch(() => {})
   }, [photo.url])
+
+  const prefetchKey = prefetchUrls?.join("|")
+  useEffect(() => {
+    prefetchUrls?.forEach((url) => prefetchImage(url)?.catch(() => {}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefetchKey])
 
   /** Runs the exit animation, then invokes `onClose`. Ignored while a close is already in progress. */
   const requestClose = useCallback(() => {
@@ -91,10 +102,17 @@ export function PhotoLightbox({ photo, onClose }: PhotoLightboxProps) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") requestClose()
+      else if (e.key === "ArrowLeft" && onPrev) {
+        setDirection("prev")
+        onPrev()
+      } else if (e.key === "ArrowRight" && onNext) {
+        setDirection("next")
+        onNext()
+      }
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [requestClose])
+  }, [requestClose, onPrev, onNext])
 
   const modal = (
     <div
@@ -126,7 +144,16 @@ export function PhotoLightbox({ photo, onClose }: PhotoLightboxProps) {
           onClick={(e) => e.stopPropagation()}
           role="presentation"
         >
-          <div className="relative group max-h-[calc(100dvh-2rem)] max-w-[calc(100dvw-2rem)]">
+          <div
+            key={photo.url}
+            className={`relative group max-h-[calc(100dvh-2rem)] max-w-[calc(100dvw-2rem)] ${
+              direction === "next"
+                ? "lightbox-slide-next"
+                : direction === "prev"
+                  ? "lightbox-slide-prev"
+                  : ""
+            }`}
+          >
             <img
               src={photo.urlLowQuality}
               alt=""
@@ -142,7 +169,7 @@ export function PhotoLightbox({ photo, onClose }: PhotoLightboxProps) {
               alt="Photography"
               quality={100}
               unoptimized
-              onLoad={() => setFullResReady(true)}
+              onLoad={() => setReadyUrl(photo.url)}
               className={`absolute left-1/2 top-1/2 block h-auto max-h-[calc(100dvh-2rem)] w-auto max-w-[calc(100dvw-2rem)] -translate-x-1/2 -translate-y-1/2 object-contain transition-opacity duration-300 ${
                 fullResReady ? "opacity-100" : "opacity-0"
               }`}
