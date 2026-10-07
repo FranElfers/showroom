@@ -1,5 +1,6 @@
 import { Photo } from "../constants"
 import { CameraStats } from "./CameraStats"
+import { getBlur } from "../lib/blur"
 import { FadeImage } from "./FadeImage"
 
 /** Props for {@link PhotoShowroom}. */
@@ -23,7 +24,7 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
                 className="col-span-1 md:col-span-2 relative w-full aspect-[2/1] overflow-hidden group"
               >
                 <FadeImage
-                  placeholderSrc={photo.urlLowQuality}
+                  placeholderSrc={getBlur(photo)?.src ?? photo.urlLowQuality}
                   src={photo.url}
                   fill
                   alt="Photography"
@@ -40,7 +41,7 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
             return (
               <div key={`${photo.url}-${i}`} className="col-span-1 w-full flex relative group">
                 <FadeImage
-                  placeholderSrc={photo.urlLowQuality}
+                  placeholderSrc={getBlur(photo)?.src ?? photo.urlLowQuality}
                   src={photo.url}
                   width={1440}
                   height={1800}

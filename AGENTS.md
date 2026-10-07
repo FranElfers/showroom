@@ -20,6 +20,7 @@ The project is built with Next.js App Router, using React Server Components by d
 - `app/components/CameraStats.tsx`: Reusable overlay for camera metadata (ISO, aperture, shutter speed, focal length) with minimal SVG icons and a bottom gradient. Hover-reveal on tiles; `alwaysVisible` for the lightbox.
 - `app/constants.ts`: The mock database. Highly normalized—photos are grouped by actual categories (e.g. `sur`), and the "todos" (all) category is the flattened union used when `category` is omitted or `todos`. Each `Photo` includes `url` (full) and `urlLowQuality` (thumbnails). **`GRID_IMAGE_SIZES`** is the `sizes` string for grid `<Image />`; edit it to trade sharpness vs. `_next/image` payload (especially the last `px` slot on large viewports).
 - `app/lib/photoSlug.ts`: **`slugFromPhotoUrl`**, **`findPhotoBySlug`**, **`findCategoryForPhoto`**—stable `photo` query values are the decoded basename of `photo.url` (e.g. `PIC03277.webp`).
+- `app/lib/blurData.ts` (**generated**) / `app/lib/blur.ts`: tiny inline WebP data URIs (~24px) + aspect ratio per photo, keyed by photo slug. Regenerate with **`pnpm blur`** (`scripts/generate-blur.mjs`, uses `sharp`) after adding photos. `getBlur(photo)` reads it. The showroom uses it as the blurred underlay (falling back to `urlLowQuality`); the lightbox sizes its box from `ratio` and layers tiny blur → `urlLowQuality` → full-res.
 - `app/lib/prefetchImage.ts`: Deduplicated `<img>` prefetch into the HTTP cache (shared by grid hover/focus and lightbox open).
 
 ## Styling Conventions

@@ -5,6 +5,7 @@ import { createPortal } from "react-dom"
 import Image from "next/image"
 
 import { Photo } from "../constants"
+import { getBlur } from "../lib/blur"
 import { prefetchImage } from "../lib/prefetchImage"
 import { CameraStats } from "./CameraStats"
 
@@ -56,6 +57,12 @@ export function PhotoLightbox({ photo, onClose, onPrev, onNext, prefetchUrls }: 
   /** URL whose full-res load finished; until it matches `photo.url` the thumbnail stays visible. */
   const [readyUrl, setReadyUrl] = useState<string | null>(null)
   const fullResReady = readyUrl === photo.url
+  /** Same idea for the smaller intermediate asset. */
+  const [smReadyUrl, setSmReadyUrl] = useState<string | null>(null)
+  const smReady = smReadyUrl === photo.url
+  const blur = getBlur(photo)
+  /** Box aspect ratio; the guess only applies to photos missing from `pnpm blur` output. */
+  const ratio = blur?.ratio ?? (photo.orientation === "horizontal" ? 3 / 2 : 2 / 3)
   /** Avoid `createPortal(..., document.body)` during SSR / prerender where `document` is undefined. */
   const [portalEl, setPortalEl] = useState<HTMLElement | null>(null)
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -146,31 +153,45 @@ export function PhotoLightbox({ photo, onClose, onPrev, onNext, prefetchUrls }: 
         >
           <div
             key={photo.url}
-            className={`relative group max-h-[calc(100dvh-2rem)] max-w-[calc(100dvw-2rem)] ${
+            className={`relative group ${
               direction === "next"
                 ? "lightbox-slide-next"
                 : direction === "prev"
                   ? "lightbox-slide-prev"
                   : ""
             }`}
+            style={{
+              aspectRatio: ratio,
+              width: `min(calc(100dvw - 2rem), calc((100dvh - 2rem) * ${ratio}))`,
+            }}
           >
+            {/* Step 1: inline tiny preview, available instantly. Clipped so the blur never bleeds. */}
+            {blur && (
+              <div aria-hidden className="absolute inset-0 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={blur.src} alt="" className="h-full w-full scale-110 object-cover blur-xl" />
+              </div>
+            )}
+            {/* Step 2: smaller asset, fades in over the tiny preview. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={photo.urlLowQuality}
               alt=""
               aria-hidden
-              className={`block h-auto max-h-[calc(100dvh-2rem)] w-auto max-w-[calc(100dvw-2rem)] object-contain transition-opacity duration-300 ${
-                fullResReady ? "opacity-0" : "opacity-100"
+              onLoad={() => setSmReadyUrl(photo.url)}
+              className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-300 ${
+                smReady ? "opacity-100" : "opacity-0"
               }`}
             />
+            {/* Step 3: full resolution, fades in over the smaller asset once loaded. */}
             <Image
               src={photo.url}
-              width={2560}
-              height={1700}
+              fill
               alt="Photography"
               quality={100}
               unoptimized
               onLoad={() => setReadyUrl(photo.url)}
-              className={`absolute left-1/2 top-1/2 block h-auto max-h-[calc(100dvh-2rem)] w-auto max-w-[calc(100dvw-2rem)] -translate-x-1/2 -translate-y-1/2 object-contain transition-opacity duration-300 ${
+              className={`object-contain transition-opacity duration-300 ${
                 fullResReady ? "opacity-100" : "opacity-0"
               }`}
               sizes="100vw"
