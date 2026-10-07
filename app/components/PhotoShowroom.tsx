@@ -1,6 +1,6 @@
-import Image from "next/image"
 import { Photo } from "../constants"
 import { CameraStats } from "./CameraStats"
+import { FadeImage } from "./FadeImage"
 
 /** Props for {@link PhotoShowroom}. */
 interface PhotoShowroomProps {
@@ -22,7 +22,8 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
                 key={`${photo.url}-${i}`}
                 className="col-span-1 md:col-span-2 relative w-full aspect-[2/1] overflow-hidden group"
               >
-                <Image
+                <FadeImage
+                  placeholderSrc={photo.urlLowQuality}
                   src={photo.url}
                   fill
                   alt="Photography"
@@ -38,7 +39,8 @@ export function PhotoShowroom({ photos }: PhotoShowroomProps) {
           } else {
             return (
               <div key={`${photo.url}-${i}`} className="col-span-1 w-full flex relative group">
-                <Image
+                <FadeImage
+                  placeholderSrc={photo.urlLowQuality}
                   src={photo.url}
                   width={1440}
                   height={1800}

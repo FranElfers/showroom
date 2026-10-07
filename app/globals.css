@@ -52,3 +52,34 @@ body::-webkit-scrollbar {
     transform: translateY(0);
   }
 }
+
+/* Indeterminate loading bar: a segment sliding across its track. */
+.loading-bar {
+  animation: loadingBar 1.4s ease-in-out infinite;
+}
+
+@keyframes loadingBar {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(300%);
+  }
+}
+
+/* Placeholder pulse between two grays (opacity pulsing would fade it toward the black page). */
+.loading-pulse {
+  animation: loadingPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%,
+  100% {
+    background-color: #242424;
+  }
+
+  50% {
+    background-color: #333333;
+  }
+}

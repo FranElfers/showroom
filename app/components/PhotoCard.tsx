@@ -1,7 +1,7 @@
-import Image from "next/image"
 import { prefetchImage } from "../lib/prefetchImage"
 import { GRID_IMAGE_SIZES, Photo } from "../constants"
 import { CameraStats } from "./CameraStats"
+import { FadeImage } from "./FadeImage"
 
 /** Props for {@link PhotoCard}. */
 interface PhotoCardProps {
@@ -23,7 +23,7 @@ export function PhotoCard({ photo, useLowQuality, onOpen }: PhotoCardProps) {
 
   const inner = (
     <>
-      <Image
+      <FadeImage
         src={src}
         alt="Portfolio image"
         fill
